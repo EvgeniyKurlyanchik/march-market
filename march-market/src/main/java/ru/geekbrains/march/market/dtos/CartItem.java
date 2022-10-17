@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 
 @Data
 
+@NoArgsConstructor
 public class CartItem {
     private Long productId;
     private String productTitle;
@@ -14,17 +15,17 @@ public class CartItem {
     private int pricePerProduct;
     private  int price;
 
-
-//    public CartItem(Long id, String title, int quantity, BigDecimal price, BigDecimal price1) {
-//    }
-
-    public CartItem(Long id, String title, int quantity, int price, int price1) {
+    public CartItem(Long productId, String productTitle, int quantity, int pricePerProduct, int price) {
+        this.productId = productId;
+        this.productTitle = productTitle;
+        this.quantity = quantity;
+        this.pricePerProduct = pricePerProduct;
+        this.price = price;
     }
 
-
-//    public void incrementQuantity() {
-//        quantity++;
-//        price = price.add(pricePerProduct);
-//    }
+    public void changeQuantity(int delta) {
+        quantity+= delta;
+        price = pricePerProduct*quantity;
+    }
 
 }

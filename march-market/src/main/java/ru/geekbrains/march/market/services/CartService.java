@@ -16,12 +16,12 @@ import java.util.List;
 public class CartService {
     private final ProductService productService;
     private  Cart tempCart;
-    private List<CartItem> items;
+//    private List<CartItem> items;
 
     @PostConstruct
     public void init() {
         tempCart = new Cart();
-        tempCart.setItems(new ArrayList<>());
+       tempCart.setItems(new ArrayList<>());
     }
 
     public Cart getCurrentCart() {
@@ -33,8 +33,14 @@ public class CartService {
       Product  product = productService.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Не найден продукт с таким id=" + productId));
       tempCart.add(product);
     }
+    public void clear(){
+       tempCart.clear();
 
+    }
 
+    public void remove(Long productId){
+        tempCart.remove(productId);
 
+    }
 
 }

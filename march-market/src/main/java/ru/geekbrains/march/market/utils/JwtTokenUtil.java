@@ -31,7 +31,6 @@ public class JwtTokenUtil {
 
         Date issuedDate = new Date();
         Date expiredDate = new Date(issuedDate.getTime() + jwtLifetime);
-
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
@@ -45,7 +44,7 @@ public class JwtTokenUtil {
         return getAllClaimsFromToken(token).getSubject();
     }
 
-    public List getRoles(String token) {
+    public List<String> getRoles(String token) {
         return getAllClaimsFromToken(token).get("roles", List.class);
     }
 

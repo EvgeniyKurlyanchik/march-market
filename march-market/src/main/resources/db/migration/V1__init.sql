@@ -37,9 +37,8 @@ values ('ROLE_USER'),
        ('ROLE_ADMIN');
 
 insert into users (username, password)
-values ('bob', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i'),
-       ('john', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i');
-
+values ('bob', '$2a$12$8LOWcb.PuUAcn3qFxstE9uVl89jCi2OEkC0IqAH8D51FBXHfZtB9i'),
+        ('admin', '$2a$12$9B39MlkUqa0SucqFGlMyJOD3jUTeRaHHEDncoKQBVy7nT8UrGXpT2');
 insert into users_roles (user_id, role_id)
 values (1, 1),
        (2, 2);
