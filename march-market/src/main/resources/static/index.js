@@ -1,9 +1,8 @@
 angular.module('market', []).controller('indexController', function ($scope, $http) {
-        $scope.loadProducts = function () {
-            $http.get('http://localhost:8189/market/api/v1/products').then(function (response) {
-                $scope.productList = response.data;
-                console.log(response);
-            });
+    $scope.loadProducts = function () {
+        $http.get('http://localhost:8189/market/api/v1/products').then(function (response) {
+            $scope.products = response.data;
+        });
         }
 
         $scope.deleteProduct = function (id) {
@@ -14,32 +13,33 @@ angular.module('market', []).controller('indexController', function ($scope, $ht
         }
 
         $scope.createNewProduct = function () {
-            console.log($scope.newProduct);
-            $http.get('http://localhost:8189/market/api/v1/products', $scope.newProduct)
+            $http.post('http://localhost:8189/market/api/v1/products/', $scope.newProduct)
                 .then(function (response) {
-                    $scope.newProduct = null;
+                    console.log($scope.newProduct);
+                    $scope.newProduct=null;
                     $scope.loadProducts();
 
                 });
         }
-        $scope.addToCart = function (productId) {
+        $scope.addToCart = function (id)  {
+            $http.get('http://localhost:8189/market/api/v1/cart/add/'+ id).then(function (response) {
+                 console.log($scope.loadCart());
+                $scope.cart=response.data;
+            });
+
+        }
+    $scope.removeFromCart = function (productId) {
             console.log($scope.loadCart());
-            $http.get('http://localhost:8189/market/api/v1/cart/add/'+productId).then(function (response) {
+            $http.get('http://localhost:8189/market/api/v1/cart/remove/' + productId).then(function () {
                 $scope.loadCart();
             });
 
         }
-        $scope.removeFromCart = function (productId) {
-            console.log($scope.loadCart());
-            $http.get('http://localhost:8189/market/api/v1/cart/remove/' + productId).then(function (response) {
+        $scope.clearCart=function() {
+            console.log($scope.clearCart());
+            $http.get('http://localhost:8189/market/api/v1/cart/clear/').then(function () {
                 $scope.loadCart();
-            });
-
-        }
-        $scope.clearCart = function () {
-            console.log($scope.loadCart());
-            $http.get('http://localhost:8189/market/api/v1/cart/clear/').then(function (response) {
-                $scope.loadCart();
+                $scope.loadCart(null);
             });
 
         }

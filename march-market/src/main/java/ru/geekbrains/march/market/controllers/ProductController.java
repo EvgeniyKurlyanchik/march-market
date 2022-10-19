@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.geekbrains.march.market.dtos.CreateNewProductDto;
 
+import ru.geekbrains.march.market.dtos.ProductDto;
 import ru.geekbrains.march.market.entities.Product;
 
 import ru.geekbrains.march.market.exceptions.ResourceNotFoundException;
@@ -31,11 +32,15 @@ public class ProductController {
 //        return new ResponseEntity<>(new AppError("RESOURCE_NOT_FOUND", "Продукт с id: " + id + " не найден"), HttpStatus.NOT_FOUND);
         return productConverter.entityToDto(productService.findById(id).orElseThrow(() -> new ResourceNotFoundException("Продукт с id: " + id + " не найден")));
     }*/
+//    @GetMapping("/{id}")
+//    public  Product findProductById(@PathVariable Long id){
+//        return productService.findById(id).orElseThrow(()-> new ResourceNotFoundException("продукт не найден ,id="+ id));
+//    }
     @GetMapping("/{id}")
-    public  Product findProductById(@PathVariable Long id){
-        return productService.findById(id).orElseThrow(()-> new ResourceNotFoundException("продукт не найден ,id="+ id));
+    public ProductDto findProductById(@PathVariable Long id){
+        Product product=productService.findById(id).orElseThrow(()-> new ResourceNotFoundException("продукт не найден ,id="+ id));
+        return new ProductDto(product.getId(),product.getTitle(),product.getPrice()) ;
     }
-
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

@@ -42,3 +42,14 @@ values ('bob', '$2a$12$8LOWcb.PuUAcn3qFxstE9uVl89jCi2OEkC0IqAH8D51FBXHfZtB9i'),
 insert into users_roles (user_id, role_id)
 values (1, 1),
        (2, 2);
+
+create table cart
+(
+    id    bigserial primary key,
+    title varchar(255),
+    price int
+);
+
+insert into cart (title, price)
+values ('Bread', 32),
+       ('Milk', 120);

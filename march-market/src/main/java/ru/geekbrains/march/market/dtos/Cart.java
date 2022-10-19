@@ -10,17 +10,15 @@ import java.util.Collections;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-
 public class Cart {
     private  List<CartItem> items;
     private int totalPrice;
     public Cart(){
         this.items = new ArrayList<>();
     }
-//    public List<CartItem> getItems() {
-//        return Collections.unmodifiableList(items);
-//    }
+    public List<CartItem> getItems() {
+        return Collections.unmodifiableList(items);
+    }
 
         public void add (Product product) {
             for (CartItem item:items) {
