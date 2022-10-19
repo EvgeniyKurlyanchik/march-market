@@ -36,7 +36,6 @@ public class CartService {
     }
     public void clear(){
        tempCart.clear();
-
     }
 
     public void remove(Long productId){

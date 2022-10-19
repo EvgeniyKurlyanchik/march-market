@@ -28,18 +28,17 @@ angular.module('market', []).controller('indexController', function ($scope, $ht
             });
 
         }
-    $scope.removeFromCart = function (productId) {
+    $scope.removeFromCart = function (id) {
             console.log($scope.loadCart());
-            $http.get('http://localhost:8189/market/api/v1/cart/remove/' + productId).then(function () {
+            $http.get('http://localhost:8189/market/api/v1/cart/remove/' + id).then(function () {
                 $scope.loadCart();
             });
 
         }
         $scope.clearCart=function() {
-            console.log($scope.clearCart());
             $http.get('http://localhost:8189/market/api/v1/cart/clear/').then(function () {
+                $scope.totalPrice=0;
                 $scope.loadCart();
-                $scope.loadCart(null);
             });
 
         }
@@ -48,6 +47,13 @@ angular.module('market', []).controller('indexController', function ($scope, $ht
                 $scope.cart = response.data;
                 console.log(response);
             });
+        }
+        $scope.plusCart=function(id){
+            $http.get('http://localhost:8189/market/api/v1/cart/plus/'+ id).then(function (response) {
+                console.log($scope.loadCart());
+                $scope.cart=response.data;
+            });
+
         }
         $scope.loadCart();
         $scope.loadProducts();
