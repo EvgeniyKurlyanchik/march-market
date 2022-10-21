@@ -18,6 +18,14 @@ spring:
       enabled: true
       settings:
         web-allow-others: false
+other:
+  cache:
+    cart: "Cart"
+
 jwt:
   secret: F65hgG#*FGF3r45&^SFertD345Sert%FDF#G345j234fguygwe54f87t*Tgf
   lifetime: 36000000
+
+
+
+  logging.level.org.springframework.web: DEBUG

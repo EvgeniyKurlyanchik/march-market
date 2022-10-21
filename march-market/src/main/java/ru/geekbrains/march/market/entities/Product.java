@@ -20,4 +20,7 @@ public class Product {
 
     @Column(name = "price")
     private int price;
+
+    public Product(Long id, String title, int price) {
+    }
 }
