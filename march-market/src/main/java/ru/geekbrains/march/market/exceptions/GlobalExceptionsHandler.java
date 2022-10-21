@@ -1,18 +1,21 @@
 package ru.geekbrains.march.market.exceptions;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionsHandler {
     @ExceptionHandler
-    public ResponseEntity<AppError> handleResourceNotFoundException(ResourceNotFoundException e) {
-        return new ResponseEntity<>(new AppError("RESOURCE_NOT_FOUND", e.getMessage()), HttpStatus.NOT_FOUND);
+    public ResponseEntity<AppError> catchResourceNotFoundException(ResourceNotFoundException e) {
+        log.error(e.getMessage(), e);
+        return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), e.getMessage()), HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler
-    public ResponseEntity<AppError> handleResourceNotFoundException(UnsupportedOperationException e) {
-        return new ResponseEntity<>(new AppError(" null", e.getMessage()), HttpStatus.NOT_FOUND);
+    public ResponseEntity<FieldsValidationError> catchValidationException(ValidationException e) {
+        log.error(e.getMessage(), e);
+        return new ResponseEntity<>(new FieldsValidationError(e.getErrorFieldsMessages()), HttpStatus.BAD_REQUEST);
     }
 }

@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -45,7 +46,7 @@ public class JwtTokenUtil {
     }
 
     public List<String> getRoles(String token) {
-        return getAllClaimsFromToken(token).get("roles", List.class);
+        return getClaimFromToken(token, (Function<Claims, List<String>>) claims -> claims.get("roles", List.class));
     }
 
     private Claims getAllClaimsFromToken(String token) {
@@ -53,5 +54,9 @@ public class JwtTokenUtil {
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
+    }
+    private <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+        Claims claims = getAllClaimsFromToken(token);
+        return claimsResolver.apply(claims);
     }
 }
