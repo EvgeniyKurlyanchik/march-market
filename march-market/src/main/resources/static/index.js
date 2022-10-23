@@ -1,61 +1,91 @@
-angular.module('market', []).controller('indexController', function ($scope, $http) {
-    $scope.loadProducts = function () {
-        $http.get('http://localhost:8189/market/api/v1/products').then(function (response) {
-            $scope.products = response.data;
-        });
-        }
+(function () {
+    angular
+        .module('market', ['ngRoute', 'ngStorage'])
+        .config(config)
+        .run(run);
 
-        $scope.deleteProduct = function (id) {
-            $http.delete('http://localhost:8189/market/api/v1/products/' + id)
-                .then(function (response) {
-                    $scope.loadProducts();
-                });
-        }
-
-        $scope.createNewProduct = function () {
-            $http.post('http://localhost:8189/market/api/v1/products/', $scope.newProduct)
-                .then(function (response) {
-                    console.log($scope.newProduct);
-                    $scope.newProduct=null;
-                    $scope.loadProducts();
-
-                });
-        }
-        $scope.addToCart = function (id)  {
-            $http.get('http://localhost:8189/market/api/v1/cart/add/'+ id).then(function (response) {
-                 console.log($scope.loadCart());
-                $scope.cart=response.data;
+    function config($routeProvider) {
+        $routeProvider
+            .when('/store', {
+                templateUrl: 'store/store.html',
+                controller: 'storeController'
+            })
+            .when('/cart', {
+                templateUrl: 'cart/cart.html',
+                controller: 'cartController'
+            })
+            .otherwise({
+                redirectTo: '/'
             });
+    }
 
+    function run($rootScope, $http, $localStorage) {
+        if ($localStorage.springWebUser) {
+            $http.defaults.headers.common.Authorization = 'Bearer ' + $localStorage.springWebUser.token;
         }
-    $scope.removeFromCart = function (id) {
-            console.log($scope.loadCart());
-            $http.get('http://localhost:8189/market/api/v1/cart/remove/' + id).then(function () {
-                $scope.loadCart();
+    }
+})();
+
+
+angular.module('market').controller('indexController', function ($scope, $rootScope, $http, $localStorage) {
+    const contextPath = 'http://localhost:8189/market/api/v1';
+
+    if(!$localStorage.cartName){
+        $localStorage.cartName = "cart_" + (Math.random() * 100);
+    }
+
+    if ($localStorage.springWebUser) {
+        $http.defaults.headers.common.Authorization = 'Bearer ' + $localStorage.springWebUser.token;
+        $localStorage.cartName = "cart_" + $localStorage.springWebUser.username;
+    }
+
+    $scope.tryToAuth = function () {
+        $http.post('http://localhost:8189/market/auth', $scope.user)
+            .then(function successCallback(response) {
+                if (response.data.token) {
+                    $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
+                    $localStorage.springWebUser = {username: $scope.user.username, token: response.data.token};
+                    $localStorage.cartName = "cart_" + $scope.user.username;
+
+                    $scope.user.username = null;
+                    $scope.user.password = null;
+                }
+            }, function errorCallback(response) {
+
             });
+    };
 
+    $scope.tryToLogout = function () {
+        $scope.clearUser();
+        if ($scope.user.username) {
+            $scope.user.username = null;
         }
-        $scope.clearCart=function() {
-            $http.get('http://localhost:8189/market/api/v1/cart/clear/').then(function () {
-                $scope.totalPrice=0;
-                $scope.loadCart();
+        if ($scope.user.password) {
+            $scope.user.password = null;
+        }
+    };
+
+    $scope.clearUser = function () {
+        delete $localStorage.springWebUser;
+        delete $localStorage.cartName;
+        $http.defaults.headers.common.Authorization = '';
+        $localStorage.cartName = null;
+    };
+
+    $rootScope.isUserLoggedIn = function () {
+        if ($localStorage.springWebUser) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    $scope.showCurrentUserInfo = function () {
+        $http.get('http://localhost:8189/market/api/v1/profile')
+            .then(function successCallback(response) {
+                alert('MY NAME IS: ' + response.data.username);
+            }, function errorCallback(response) {
+                alert('UNAUTHORIZED');
             });
-
-        }
-        $scope.loadCart = function () {
-            $http.get('http://localhost:8189/market/api/v1/cart/').then(function (response) {
-                $scope.cart = response.data;
-                console.log(response);
-            });
-        }
-        $scope.plusCart=function(id){
-            $http.get('http://localhost:8189/market/api/v1/cart/plus/'+ id).then(function (response) {
-                console.log($scope.loadCart());
-                $scope.cart=response.data;
-            });
-
-        }
-        $scope.loadCart();
-        $scope.loadProducts();
-
-    });
+    }
+});
