@@ -9,16 +9,21 @@ import ru.geekbrains.march.market.dtos.CreateNewProductDto;
 import ru.geekbrains.march.market.dtos.ProductDto;
 import ru.geekbrains.march.market.entities.Product;
 import ru.geekbrains.march.market.exceptions.ResourceNotFoundException;
+import ru.geekbrains.march.market.repositories.ProductRepo;
 import ru.geekbrains.march.market.repositories.ProductRepository;
 import ru.geekbrains.march.market.repositories.ProductsSpecifications;
 
+
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final ProductRepo productRepo;
 
     public void deleteById(Long id) {
         productRepository.deleteById(id);
@@ -59,4 +64,26 @@ public class ProductService {
         product.setTitle(productDto.getTitle());
         return product;
     }
+///SOAP//
+    public  final Function<Product , ru.geekbrains.march.market.soap.Product> functionEntityToSoap = se -> {
+        ru.geekbrains.march.market.soap.Product p = new ru.geekbrains.march.market.soap.Product();
+        p.setId(se.getId());
+        p.setTitle(se.getTitle());
+        p.setPrice(se.getPrice());
+         p.setCategoryTitle(se.getTitle());
+
+    return p;
+    };
+    public List<ru.geekbrains.march.market.soap.Product> getAllProducts() {
+        return productRepo.findAll().stream().map(functionEntityToSoap).collect(Collectors.toList());
+    }
+
+    public ru.geekbrains.march.market.soap.Product getById(Long id) {
+        return productRepo.findById(id).map(functionEntityToSoap).get();
+    }
+
+
+
+////SOAP///
+
 }
